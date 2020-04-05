@@ -162,7 +162,7 @@ def get_modularity(original_network, network_components_rdds, m):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-power_file_rdd = sc.textFile("sample.txt").map(lambda x: (x.split(" ")[0], x.split(" ")[1]))
+power_file_rdd = sc.textFile("power_input.txt").map(lambda x: (x.split(" ")[0], x.split(" ")[1]))
 edges_rdd = power_file_rdd.flatMap(lambda x: [(x[0], x[1]), (x[1], x[0])]).distinct()
 
 m = edges_rdd.count() / 2
@@ -191,6 +191,8 @@ final_communities = []
 max_modularity = -1.0
 max_mod_network = tuple()
 mod_decreased_count = 0
+single_components = []
+
 while True:
     edge_break_candidates = []
     # print("(While Loop) next Iter beginning network comps:", network_components)
@@ -199,43 +201,35 @@ while True:
     num_nodes = 0
     max_btw_cent = 0
     edge_to_break = None
-    for component in network_components:
+    for component in network_components[:]:
         component_adj_list = component.collectAsMap()
         num_nodes += len(component_adj_list)
 
         if len(component_adj_list) == 1:
+            single_components.append(component)
+            print("Num of Singular components: ", len(single_components))
+            network_components.remove(component)
             continue
         # print("(While Loop) Component Len = ", len(component_adj_list))
-        # print("Component = ")
-        # for c in sorted(component_adj_list.items(), key=lambda x:x[0]):
-        #   print(c)
+
         btw_cent = component.flatMap(
             lambda node: get_btw_cent_compnt(node[0], component_adj_list)).groupByKey().mapValues(
             lambda l: sum(l) / 2).sortBy(lambda x: x[1]).collect()
         if btw_cent:
             if btw_cent[-1][1] > max_btw_cent:
                 edge_to_break = btw_cent[-1][0]
-            #btw_cent.sort(key=lambda x: x[1], reverse=True)
-            #edge_break_candidates.append(btw_cent[-1])
-    # print("-------------------------")
+
     print("Sigma_nodes(components): ", num_nodes)
-    #edge_to_break = tuple()
-    #if edge_to_break:
-        #edge_break_candidates.sort(key=lambda x: x[1], reverse=True)
-        #edge_to_break = edge_break_candidates[0][0]
-        # print("Edge to break - ", edge_to_break)
-    #else:
-        #print("No more edges to break. ")
-        #edge_to_break = None
 
     new_network_components = get_network_components(network_components, edge_to_break)
     # print("(While Loop) New network components after breaking edge: ", new_network_components)
-    # old_modularity = get_modularity(original_network, network_components, m)
+
     new_modularity = get_modularity(original_network, new_network_components, m)
+
     # print("Max modularity= ", max_modularity, "|", "New modularity= ", new_modularity)
 
     if new_modularity > max_modularity:
-        max_mod_network = (new_modularity, new_network_components)
+        max_mod_network = (new_modularity, new_network_components+single_components)
         max_modularity = new_modularity
         mod_decreased_count = 0
     else:
@@ -243,9 +237,9 @@ while True:
 
     network_components = new_network_components
 
-    if len(network_components) == len(original_network): #mod_decreased_count > 25:
+    if len(single_components) == len(original_network): #mod_decreased_count > 25:
         break
-    print("While loop one iter: ", time() - while_start, "s")
+    print("While loop one iter: ", time() - while_start, "s\n")
 
 
 final_communities = max_mod_network[1]
