@@ -1,3 +1,4 @@
+from collections import defaultdict
 from pyspark import SparkContext
 from sys import argv
 from time import time
@@ -148,6 +149,7 @@ def get_modularity(o_network, net_components, m):
     :param m: number of edges in original_network
     :return: modularity [-1, 1]
     '''
+
     # mod_start_time = time()
     sum = 0.0
     for s in net_components:
@@ -161,12 +163,23 @@ def get_modularity(o_network, net_components, m):
     return sum / (2 * m)
 
 
-def task2_1(adj_list):
-    betweenness_centrality = adj_list.flatMap(
-        lambda node: get_btw_cent_compnt(node[0], original_network)).groupByKey().mapValues(
-        lambda l: sum(l) / 2.0).collect()
+def task2_1(o_network):
 
-    betweenness_centrality.sort(key=lambda x: x[0][0])
+    btw_cent_list = list()
+    for node in o_network.keys():
+        btw_cent_list.extend(get_betweenness_py(node, o_network))
+
+    btw_cent_dict = defaultdict(int)
+    for edge_credit in btw_cent_list:
+        btw_cent_dict[edge_credit[0]] += (edge_credit[1] / 2.0)
+
+    betweenness_centrality = list(btw_cent_dict.items())
+
+    '''betweenness_centrality = adj_list.flatMap(
+        lambda node: get_btw_cent_compnt(node[0], original_network)).groupByKey().mapValues(
+        lambda l: sum(l) / 2.0).collect()'''
+
+    betweenness_centrality.sort(key=lambda x: (x[0][0], x[0][1]))
     betweenness_centrality.sort(key=lambda x: x[1], reverse=True)
 
     with open(str("task2a.txt"), "w") as file:
@@ -192,23 +205,34 @@ def find_communities(original_network, mod_calc_orig_net, m):
                 network_components.remove(component)
                 continue
 
-            btw_cent_time = time()
-            btw_cent = sc.parallelize(component.items()).flatMap(
+            #btw_cent_time = time()
+
+            btw_cent_list = list()
+            for node in component.keys():
+                btw_cent_list.extend(get_betweenness_py(node, component))
+
+            btw_cent_dict = defaultdict(int)
+            for edge_credit in btw_cent_list:
+                btw_cent_dict[edge_credit[0]] += (edge_credit[1] / 2.0)
+
+            btw_cent = sorted(btw_cent_dict.items(), key=lambda x: (x[1], x[0][0], x[0][1]))
+
+            '''btw_cent = sc.parallelize(component.items()).flatMap(
                 lambda node: get_btw_cent_compnt(node[0], component)).groupByKey().mapValues(
-                lambda l: sum(l) / 2.0).sortBy(lambda x: x[1]).persist().collect()
+                lambda l: sum(l) / 2.0).sortBy(lambda x: x[1]).persist().collect()'''
 
             if btw_cent and btw_cent[-1][1] > max_btw_cent:
                 max_btw_cent = btw_cent[-1][1]
                 edge_to_break = btw_cent[-1][0]
-            print("btw_cent_time:", time() - btw_cent_time)
+            #print("btw_cent_time:", time() - btw_cent_time)
 
-        nc_time = time()
+        #nc_time = time()
         new_network_components = get_network_components(network_components[:], edge_to_break)
-        print("get_net_comp time:", time() - nc_time, "s")
+        #print("get_net_comp time:", time() - nc_time, "s")
 
-        mod_time = time()
+        #mod_time = time()
         new_modularity = get_modularity(mod_calc_orig_net, new_network_components + single_components, m)
-        print("get_mod time:", time() - mod_time, "s\n")
+        #print("get_mod time:", time() - mod_time, "s\n")
 
         if new_modularity > max_modularity:
             max_modularity = new_modularity
@@ -219,7 +243,7 @@ def find_communities(original_network, mod_calc_orig_net, m):
 
         network_components = new_network_components
 
-        if mod_decreased_count > 25:  # len(single_components) == len(mod_calc_orig_net): # mod_decreased_count > 25: ##
+        if len(single_components) == len(mod_calc_orig_net): # mod_decreased_count > 25: ##
             break
 
     final_communities = max_mod_network[1]
@@ -227,9 +251,11 @@ def find_communities(original_network, mod_calc_orig_net, m):
     final_comm.sort(key=lambda x: x[0])
     final_comm.sort(key=lambda x: len(x))
 
-    print("Final Communities = ")
+    print("Final Communities = \n")
+    i = 1
     for community in final_comm:
-        print(len(community), community)
+        print(i, len(community), community)
+        i += 1
 
     with open(str("task2_comm.txt"), "w") as file:
         for community_list in final_comm:
@@ -246,6 +272,91 @@ def find_communities(original_network, mod_calc_orig_net, m):
     print("Time taken: ", time() - start_time, "s")
 
 
+def get_betweenness_py(root_node, network_component):
+    # btw_start_time = time()
+    bfsQ = [root_node]
+    visited = set()
+    visited.add(root_node)
+    level = {root_node: 0}
+    node_values = {root_node: 1.0}
+    parents = {}
+    children = {}
+
+    precalc_time = time()
+
+    node_index = 0
+    while node_index <= len(bfsQ) - 1:
+        node = bfsQ[node_index]
+        node_values[node] = 0.0
+        children[node] = set()
+
+        # assigning node numbers. (sum of parents numbers)
+        if node == root_node:
+            node_values[node] = 1.0
+        else:
+            for parent in parents[node]:
+                node_values[node] += node_values[parent]
+
+        # collecting parent and children for each node
+        node_children = network_component[node]
+        for child_node in node_children:
+            if child_node in visited:
+                if level[child_node] == level[node] + 1:
+                    parents[child_node].add(node)
+                    children[node].add(child_node)
+            else:
+                bfsQ.append(child_node)
+                visited.add(child_node)
+                level[child_node] = level[node] + 1.0
+                parents[child_node] = set()
+                parents[child_node].add(node)
+                children[node].add(child_node)
+        node_index += 1
+
+    # print("Precalc time:", (time()-precalc_time)*1000,"ms")
+
+    # print("------------------------------")
+    # print("Root Node: ", root_node)
+    # print("Tree Level Dict: ", len(level), level)
+    # print("Node values Dict: ", node_values)
+    # print("Parent Dict: ", parents)
+    # print("Child Dict: ", children)
+
+    credit_time = time()
+
+    # calculating credits
+    # bfsQ_copy.reverse()
+    # reverse_bfsQ = bfsQ_copy
+    edge_credit = list()
+    node_credit = {}
+
+    node_index = len(bfsQ) - 1
+    while node_index >= 0:
+        node = bfsQ[node_index]
+        if node not in node_credit:
+            node_credit[node] = 1.0
+        if node in parents:
+            node_parents = parents[node]
+            if children[node]:
+                sum_node_values = sum(node_values[p] for p in node_parents)
+                for node_parent in node_parents:
+                    partial_credit = float(node_credit[node]) * node_values[node_parent] / sum_node_values
+                    if node_parent not in node_credit:
+                        node_credit[node_parent] = 1.0
+                    node_credit[node_parent] += partial_credit
+                    edge_credit.append((tuple(sorted([node, node_parent])), partial_credit))
+            else:  # it is a leaf node in the bfs tree
+                for node_parent in node_parents:
+                    partial_credit = float(node_values[node_parent]) / float(node_values[node])
+                    if node_parent not in node_credit:
+                        node_credit[node_parent] = 1.0
+                    node_credit[node_parent] += partial_credit
+                    edge_credit.append((tuple(sorted([node, node_parent])), partial_credit))
+        node_index -= 1
+    # print("get_btw_cnt: ", time()-btw_start_time,"s")
+    # print("calc credit time = ", (time() - credit_time)*1000,"ms")
+    return edge_credit
+
 # ----------------------------------------------------------------------------------------------------------------------
 
 power_file_rdd = sc.textFile("power_input.txt").map(lambda x: (x.split(" ")[0], x.split(" ")[1]))
@@ -256,7 +367,7 @@ adj_list = edges_rdd.groupByKey().mapValues(lambda l: list(l)).persist()
 original_network = adj_list.collectAsMap()
 mod_calc_orig_net = adj_list.collectAsMap()
 
-task2_1(adj_list)
+task2_1(original_network)
 find_communities(original_network, mod_calc_orig_net, m)
 
 # GO THROUGH WHOLE CODE, ESPECIALLY READ THROUGH THE FUNCTIONS, THE MAIN METHOD PART LOOKS FINE.
