@@ -93,6 +93,7 @@
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
         <env name="PYSPARK_PYTHON" value="python3.6" />
         <env name="J2SDKDIR" value="/usr/lib/jvm/java-1.8.0-openjdk-amd64" />
         <env name="JAVA_HOME" value="/usr/lib/jvm/java-1.8.0-openjdk-amd64" />
@@ -170,23 +171,35 @@
       <option name="project" value="LOCAL" />
       <updated>1586120271459</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="making it faster v2-updated till changing all to array of dict instead of array of rdds">
+      <created>1586125809129</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1586125809129</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Finished generating communities. but v slow." />
     <MESSAGE value="making it faster v1" />
-    <option name="LAST_COMMIT_MESSAGE" value="making it faster v1" />
+    <MESSAGE value="making it faster v2-updated till changing all to array of dict instead of array of rdds" />
+    <option name="LAST_COMMIT_MESSAGE" value="making it faster v2-updated till changing all to array of dict instead of array of rdds" />
   </component>
   <component name="WindowStateProjectService">
     <state x="451" y="210" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586042929582">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="451" y="210" key="#com.intellij.execution.impl.EditConfigurationsDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1586042929582" />
-    <state x="590" y="110" width="797" height="884" key="CommitChangelistDialog2" timestamp="1586120270381">
+    <state x="726" y="301" width="524" height="503" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1586314252982">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="590" y="110" width="797" height="884" key="CommitChangelistDialog2/67.27.1853.1053@67.27.1853.1053" timestamp="1586120270381" />
+    <state x="726" y="301" width="524" height="503" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1586314252982" />
+    <state x="590" y="110" width="797" height="884" key="CommitChangelistDialog2" timestamp="1586125807947">
+      <screen x="67" y="27" width="1853" height="1053" />
+    </state>
+    <state x="590" y="110" width="797" height="884" key="CommitChangelistDialog2/67.27.1853.1053@67.27.1853.1053" timestamp="1586125807947" />
     <state x="730" y="317" width="515" height="469" key="EnvironmentVariablesDialog" timestamp="1585699814552">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
@@ -195,30 +208,30 @@
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="753" y="295" width="471" height="514" key="FileChooserDialogImpl/67.27.1853.1053@67.27.1853.1053" timestamp="1585793581764" />
-    <state width="1830" height="278" key="GridCell.Tab.0.bottom" timestamp="1586042936006">
+    <state width="1830" height="278" key="GridCell.Tab.0.bottom" timestamp="1586154613238">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1830" height="278" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1586042936006" />
-    <state width="1830" height="278" key="GridCell.Tab.0.center" timestamp="1586042936004">
+    <state width="1830" height="278" key="GridCell.Tab.0.bottom/67.27.1853.1053@67.27.1853.1053" timestamp="1586154613238" />
+    <state width="1830" height="278" key="GridCell.Tab.0.center" timestamp="1586154613236">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1830" height="278" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1586042936004" />
-    <state width="1830" height="278" key="GridCell.Tab.0.left" timestamp="1586042936003">
+    <state width="1830" height="278" key="GridCell.Tab.0.center/67.27.1853.1053@67.27.1853.1053" timestamp="1586154613236" />
+    <state width="1830" height="278" key="GridCell.Tab.0.left" timestamp="1586154613212">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1830" height="278" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1586042936003" />
-    <state width="1830" height="278" key="GridCell.Tab.0.right" timestamp="1586042936005">
+    <state width="1830" height="278" key="GridCell.Tab.0.left/67.27.1853.1053@67.27.1853.1053" timestamp="1586154613212" />
+    <state width="1830" height="278" key="GridCell.Tab.0.right" timestamp="1586154613237">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state width="1830" height="278" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1586042936005" />
+    <state width="1830" height="278" key="GridCell.Tab.0.right/67.27.1853.1053@67.27.1853.1053" timestamp="1586154613237" />
     <state x="475" y="187" key="SettingsEditor" timestamp="1585868466701">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="475" y="187" key="SettingsEditor/67.27.1853.1053@67.27.1853.1053" timestamp="1585868466701" />
-    <state x="641" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1585796344977">
+    <state x="641" y="380" key="com.intellij.ide.util.TipDialog" timestamp="1586303496858">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="641" y="380" key="com.intellij.ide.util.TipDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1585796344977" />
+    <state x="641" y="380" key="com.intellij.ide.util.TipDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1586303496858" />
     <state x="1203" y="239" width="496" height="626" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1585861458662">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
