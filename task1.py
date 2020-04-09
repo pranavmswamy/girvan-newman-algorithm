@@ -3,15 +3,17 @@ from pyspark.sql import SparkSession
 from graphframes import *
 import os
 from sys import argv
+from time import time
 
 os.environ["PYSPARK_SUBMIT_ARGS"] = ("--packages graphframes:graphframes:0.6.0-spark2.3-s_2.11 pyspark-shell")
 
 sc = SparkContext()
+start_time = time()
 sc.setLogLevel("ERROR")
 spark = SparkSession(sparkContext=sc)
 
 power_file_rdd = sc.textFile(str(argv[1])).map(lambda x: (x.split(" ")[0], x.split(" ")[1]))
-edges_rdd = power_file_rdd.map(lambda x: [(x[0], x[1]), (x[1], x[0])]).flatMap(lambda x: x)
+edges_rdd = power_file_rdd.flatMap(lambda x: [(x[0], x[1]), (x[1], x[0])]).distinct()
 vertices_rdd = power_file_rdd.flatMap(lambda x: x).distinct().map(lambda x: (x,))
 v_list = vertices_rdd.collect()
 e_list = edges_rdd.collect()
@@ -40,3 +42,5 @@ with open(str(argv[2]), "w") as file:
                 file.write(str("'" + community_list[num]+ "'"))
             file.write("\n")
     file.close()
+
+print("Time taken: ", time()-start_time,"s")

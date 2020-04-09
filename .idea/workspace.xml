@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="05acd372-f42f-46ec-b5aa-b72e72b772fd" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/result1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/result1_inorder.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/task1.py" beforeDir="false" afterPath="$PROJECT_DIR$/task1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/task2.py" beforeDir="false" afterPath="$PROJECT_DIR$/task2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -69,7 +72,6 @@
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
         <env name="PYSPARK_PYTHON" value="python3.6" />
         <env name="J2SDKDIR" value="/usr/lib/jvm/java-1.8.0-openjdk-amd64" />
         <env name="JAVA_HOME" value="/usr/lib/jvm/java-1.8.0-openjdk-amd64" />
@@ -134,9 +136,9 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.task1" />
       <item itemvalue="Python.task2" />
       <item itemvalue="Python.xia" />
+      <item itemvalue="Python.task1" />
       <item itemvalue="Python.xia_community" />
     </list>
     <recent_temporary>
@@ -185,7 +187,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586370914043</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="everything working perfectly. commiting before making production quality change.">
+      <created>1586383685441</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1586383685441</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -193,7 +202,8 @@
     <MESSAGE value="making it faster v1" />
     <MESSAGE value="making it faster v2-updated till changing all to array of dict instead of array of rdds" />
     <MESSAGE value="committed before changing btw calc from spark to python" />
-    <option name="LAST_COMMIT_MESSAGE" value="committed before changing btw calc from spark to python" />
+    <MESSAGE value="everything working perfectly. commiting before making production quality change." />
+    <option name="LAST_COMMIT_MESSAGE" value="everything working perfectly. commiting before making production quality change." />
   </component>
   <component name="WindowStateProjectService">
     <state x="451" y="210" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1586042929582">
@@ -204,10 +214,10 @@
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
     <state x="726" y="301" width="524" height="503" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/67.27.1853.1053@67.27.1853.1053" timestamp="1586314252982" />
-    <state x="590" y="110" width="797" height="884" key="CommitChangelistDialog2" timestamp="1586370913407">
+    <state x="590" y="110" width="948" height="884" key="CommitChangelistDialog2" timestamp="1586383683035">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
-    <state x="590" y="110" width="797" height="884" key="CommitChangelistDialog2/67.27.1853.1053@67.27.1853.1053" timestamp="1586370913407" />
+    <state x="590" y="110" width="948" height="884" key="CommitChangelistDialog2/67.27.1853.1053@67.27.1853.1053" timestamp="1586383683035" />
     <state x="730" y="317" width="515" height="469" key="EnvironmentVariablesDialog" timestamp="1585699814552">
       <screen x="67" y="27" width="1853" height="1053" />
     </state>
